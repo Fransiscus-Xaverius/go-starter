@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"strconv"
+
+	appError "github.com/cde/go-example/src/error"
 	userDTO "github.com/cde/go-example/src/modules/user/dto"
 	usecase "github.com/cde/go-example/src/modules/user/usecase"
 	"github.com/go-playground/validator/v10"
@@ -48,10 +51,15 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 }
 
 func (h *UserHandler) GetByID(c *fiber.Ctx) error {
-	id := c.Params("id")
-	user, err := h.userUseCase.GetUser(c.Context(), id)
+	idStr := c.Params("id")
+	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
-		return c.Status(404).SendString(err.Error())
+		return appError.CodeErrValidation.WithErrorDetail(err)
+	}
+
+	user, err := h.userUseCase.GetUser(c.Context(), int32(id))
+	if err != nil {
+		return err
 	}
 	return c.JSON(user)
 }
