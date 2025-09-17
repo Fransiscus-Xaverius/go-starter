@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS user
     `updated_at`   bigint(20) UNSIGNED                            NOT NULL,
     `updated_by`   bigint(20) UNSIGNED                            NOT NULL,
     UNIQUE KEY `idx_unique_email` (`email`) USING HASH,
-    FULLTEXT KEY `idx_fulltext_email` (`email`)
+    FULLTEXT KEY `idx_fulltext_name` (`name`)
     ) ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_general_ci;
