@@ -24,21 +24,9 @@ const (
 
 var (
 	codeErrMap = map[CodeErr]CodeErrMessage{
-		CodeErrGeneral: {
-			ErrMessage: "Something went wrong",
-			ErrCode:    "ERRDEMO500001",
-			StatusCode: fiber.StatusInternalServerError,
-		},
-		CodeErrValidation: {
-			ErrMessage: "Validation error",
-			ErrCode:    "ERRDEMO400002",
-			StatusCode: fiber.StatusBadRequest,
-		},
-		CodeErrUserNotFound: {
-			ErrMessage: "User not found",
-			ErrCode:    "ERRDEMO404003",
-			StatusCode: fiber.StatusNotFound,
-		},
+		CodeErrGeneral:      {ErrMessage: "Something went wrong", ErrCode: "ERRDEMO500001", StatusCode: fiber.StatusInternalServerError},
+		CodeErrValidation:   {ErrMessage: "Validation error", ErrCode: "ERRDEMO400002", StatusCode: fiber.StatusBadRequest},
+		CodeErrUserNotFound: {ErrMessage: "User not found", ErrCode: "ERRDEMO404003", StatusCode: fiber.StatusNotFound},
 	}
 )
 
