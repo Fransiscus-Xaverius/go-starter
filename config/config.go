@@ -1,15 +1,34 @@
 package config
 
 import (
-	"fmt"
-
-	"github.com/spf13/viper"
+	"github.com/kelseyhightower/envconfig"
 )
 
-func LoadConfig() {
-	viper.SetConfigFile("./config/config.json")
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("fatal error config file: %w", err))
+type Config struct {
+	AppName    string `envconfig:"APP_NAME" default:"demo-api"`
+	AppVersion string `envconfig:"APP_VERSION" default:"v1.0.0"`
+	AppEnv     string `envconfig:"APP_ENV" default:"development"`
+	AppPort    int    `envconfig:"APP_PORT" default:"3000"`
+	AppDebug   bool   `envconfig:"APP_DEBUG" default:"true"`
+
+	MySQLHost              string `envconfig:"MYSQL_HOST" default:"localhost"`
+	MySQLPort              int    `envconfig:"MYSQL_PORT" default:"3306"`
+	MySQLUsername          string `envconfig:"MYSQL_USERNAME" default:"root"`
+	MySQLPassword          string `envconfig:"MYSQL_PASSWORD" default:"password12345"`
+	MySQLDbName            string `envconfig:"MYSQL_DBNAME" default:"demo"`
+	MySQLMaxIdleConnection int    `envconfig:"MYSQL_MAX_IDLE_CONNECTION" default:"10"`
+	MySQLMaxOpenConnection int    `envconfig:"MYSQL_MAX_OPEN_CONNECTION" default:"100"`
+	MySQLConnMaxLifetime   int    `envconfig:"MYSQL_CONN_MAX_LIFETIME" default:"5"` // in minutes
+
+}
+
+var cfg *Config
+
+func Get() *Config {
+	if cfg == nil {
+		cfg = &Config{}
+		envconfig.MustProcess("", cfg)
 	}
+
+	return cfg
 }

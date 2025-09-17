@@ -1,8 +1,8 @@
 package error
 
 import (
+	"github.com/cde/go-example/config"
 	"github.com/gofiber/fiber/v2"
-	"github.com/spf13/viper"
 )
 
 type (
@@ -54,7 +54,7 @@ func (c CodeErrMessage) Error() string {
 func (c CodeErrMessage) ToJson(ctx *fiber.Ctx) error {
 	statusCode := c.StatusCode
 	c.StatusCode = 0
-	if !viper.GetBool("app.debug") {
+	if !config.Get().AppDebug {
 		c.ErrDetail = ""
 	}
 	return ctx.Status(statusCode).JSON(c)
