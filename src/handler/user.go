@@ -5,10 +5,9 @@ import (
 
 	appError "github.com/cde/go-example/src/error"
 	userDTO "github.com/cde/go-example/src/modules/user/dto"
-	usecase "github.com/cde/go-example/src/modules/user/usecase"
+	"github.com/cde/go-example/src/modules/user/usecase"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	// middleware "github.com/cde/go-example/src/middleware"
 )
 
 type UserHandler struct {

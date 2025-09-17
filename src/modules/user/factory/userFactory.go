@@ -1,4 +1,4 @@
-package userFactory
+package factory
 
 import (
 	"github.com/cde/go-example/src/modules/user/repository"

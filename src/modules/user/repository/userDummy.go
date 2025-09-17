@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	entity "github.com/cde/go-example/src/modules/user/entity"
+	"github.com/cde/go-example/src/modules/user/entity"
 )
 
 type UserDummy struct{}

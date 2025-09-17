@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	entity "github.com/cde/go-example/src/modules/user/entity"
+	"github.com/cde/go-example/src/modules/user/entity"
 	"gorm.io/gorm"
 )
 
