@@ -1,6 +1,7 @@
 {
   "app": {
-    "debug": true
+    "debug": true,
+    "port": 3000
   },
   "mysql": {
     "host": "localhost",

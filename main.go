@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/spf13/viper"
 )
 
 // use a single instance of Validate, it caches struct info
@@ -43,7 +44,7 @@ func main() {
 	handler.NewUserHandler(app, validate, userUseCase)
 
 	fmt.Println("Fiber app is running...")
-	err := app.Listen(":3000")
+	err := app.Listen(fmt.Sprintf(":%d", viper.GetInt("app.port")))
 	if err != nil {
 		panic(err)
 	}
