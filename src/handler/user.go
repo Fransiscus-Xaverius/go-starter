@@ -3,6 +3,7 @@ package handler
 import (
 	"strconv"
 
+	"github.com/cde/go-example/src/context"
 	appError "github.com/cde/go-example/src/error"
 	userDTO "github.com/cde/go-example/src/modules/user/dto"
 	"github.com/cde/go-example/src/modules/user/usecase"
@@ -27,9 +28,12 @@ func registerEndpoints(app *fiber.App, handler *UserHandler) {
 }
 
 func (h *UserHandler) Create(c *fiber.Ctx) error {
-	var req userDTO.UserRequest
-	ctx := c.Context()
+	var (
+		logger, ctx = context.LoggerWithContext(c)
+		req         userDTO.UserRequest
+	)
 
+	logger.Info("UserHandler.Create")
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).SendString(err.Error())
 	}
@@ -50,13 +54,18 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 }
 
 func (h *UserHandler) GetByID(c *fiber.Ctx) error {
+	var (
+		logger, ctx = context.LoggerWithContext(c)
+	)
+
+	logger.Info("UserHandler.GetByID")
 	idStr := c.Params("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		return appError.CodeErrValidation.WithErrorDetail(err)
 	}
 
-	user, err := h.userUseCase.GetUser(c.Context(), int32(id))
+	user, err := h.userUseCase.GetUser(ctx, int32(id))
 	if err != nil {
 		return err
 	}
@@ -64,7 +73,12 @@ func (h *UserHandler) GetByID(c *fiber.Ctx) error {
 }
 
 func (h *UserHandler) List(c *fiber.Ctx) error {
-	users, err := h.userUseCase.ListUsers(c.Context(), 10, 0)
+	var (
+		logger, ctx = context.LoggerWithContext(c)
+	)
+
+	logger.Info("UserHandler.List")
+	users, err := h.userUseCase.ListUsers(ctx, 10, 0)
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}

@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/cde/go-example/config"
+	appLogger "github.com/cde/go-example/src/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func MakeGormDBConnection(cfg *config.Config) *gorm.DB {
@@ -20,7 +20,8 @@ func MakeGormDBConnection(cfg *config.Config) *gorm.DB {
 	db, err := gorm.Open(
 		mysql.Open(dsn),
 		&gorm.Config{
-			Logger: logger.Default.LogMode(logger.Info),
+			//Logger: logger.Default.LogMode(logger.Info),
+			Logger: appLogger.MakeGormSingleLineLoggerWithDefaultInterface(),
 		},
 	)
 	if err != nil {

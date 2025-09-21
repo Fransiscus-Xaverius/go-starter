@@ -7,11 +7,10 @@ import (
 	appError "github.com/cde/go-example/src/error"
 	"github.com/cde/go-example/src/factory"
 	"github.com/cde/go-example/src/handler"
+	"github.com/cde/go-example/src/middleware"
 	userFactory "github.com/cde/go-example/src/modules/user/factory"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
 // use a single instance of Validate, it caches struct info
@@ -23,12 +22,8 @@ func main() {
 		ErrorHandler: appError.CustomErrHandler,
 	})
 
-	// Logging Request ID
-	app.Use(requestid.New())
-	app.Use(logger.New(logger.Config{
-		// For more options, see the Config section
-		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}\n",
-	}))
+	// Middlewares
+	app.Use(middleware.RequestId, middleware.LoggerContext, middleware.RequestLog)
 
 	// load config
 	cfg := config.Get()

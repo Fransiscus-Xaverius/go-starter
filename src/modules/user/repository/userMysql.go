@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	appContext "github.com/cde/go-example/src/context"
 	"github.com/cde/go-example/src/modules/user/entity"
 	"gorm.io/gorm"
 )
@@ -17,13 +18,25 @@ func NewUserMySQL(db *gorm.DB) UserInterface {
 }
 
 func (u userMySQL) Create(ctx context.Context, user *entity.User) (*entity.User, error) {
-	err := u.db.Create(user).Error
+	var (
+		logger = appContext.LoggerFromContext(ctx)
+		db     = u.db.WithContext(ctx)
+	)
+
+	logger.Info("userMySQL.Create")
+	err := db.Create(user).Error
 	return user, err
 }
 
 func (u userMySQL) GetByID(ctx context.Context, id int32) (*entity.User, error) {
-	var user entity.User
-	err := u.db.Where("id=?", id).First(&user).Error
+	var (
+		logger = appContext.LoggerFromContext(ctx)
+		db     = u.db.WithContext(ctx)
+		user   entity.User
+	)
+
+	logger.Info("userMySQL.GetByID")
+	err := db.Where("id=?", id).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -35,7 +48,13 @@ func (u userMySQL) GetByID(ctx context.Context, id int32) (*entity.User, error) 
 }
 
 func (u userMySQL) List(ctx context.Context, limit int, offset int) ([]entity.User, error) {
-	var users []entity.User
-	err := u.db.Limit(limit).Offset(offset).Find(&users).Error
+	var (
+		logger = appContext.LoggerFromContext(ctx)
+		db     = u.db.WithContext(ctx)
+		users  []entity.User
+	)
+
+	logger.Info("userMySQL.List")
+	err := db.Limit(limit).Offset(offset).Find(&users).Error
 	return users, err
 }

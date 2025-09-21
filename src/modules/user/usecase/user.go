@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	appContext "github.com/cde/go-example/src/context"
 	appError "github.com/cde/go-example/src/error"
 	userDTO "github.com/cde/go-example/src/modules/user/dto"
 	"github.com/cde/go-example/src/modules/user/entity"
@@ -13,11 +14,16 @@ type userUseCase struct {
 	userRepository userRepository.UserInterface
 }
 
-func NewUserUseCase(userRepository userRepository.UserInterface) *userUseCase {
+func NewUserUseCase(userRepository userRepository.UserInterface) UserUseCaseInterface {
 	return &userUseCase{userRepository: userRepository}
 }
 
 func (u userUseCase) CreateUser(ctx context.Context, request *userDTO.UserRequest) (*userDTO.UserResponse, error) {
+	var (
+		logger = appContext.LoggerFromContext(ctx)
+	)
+
+	logger.Info("userUseCase.CreateUser")
 	newRecord, err := u.userRepository.Create(
 		ctx,
 		&entity.User{
@@ -38,6 +44,11 @@ func (u userUseCase) CreateUser(ctx context.Context, request *userDTO.UserReques
 }
 
 func (u userUseCase) GetUser(ctx context.Context, id int32) (*userDTO.UserResponse, error) {
+	var (
+		logger = appContext.LoggerFromContext(ctx)
+	)
+
+	logger.Info("userUseCase.GetUser")
 	user, err := u.userRepository.GetByID(ctx, id)
 	if err != nil {
 		return nil, appError.CodeErrGeneral.WithErrorDetail(err)
@@ -50,6 +61,12 @@ func (u userUseCase) GetUser(ctx context.Context, id int32) (*userDTO.UserRespon
 }
 
 func (u userUseCase) ListUsers(ctx context.Context, limit int, offset int) ([]userDTO.UserResponse, error) {
+	var (
+		logger = appContext.LoggerFromContext(ctx)
+	)
+
+	logger.Info("userUseCase.ListUsers")
+
 	users, err := u.userRepository.List(ctx, limit, offset)
 	if err != nil {
 		return nil, err
