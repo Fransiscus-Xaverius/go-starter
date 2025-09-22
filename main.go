@@ -35,9 +35,10 @@ func main() {
 	userUseCase := userFactory.ResolveUserUseCase(userRepository)
 
 	// register handler
+	handler.NewHealthCheckHandler(app)
 	handler.NewUserHandler(app, validate, userUseCase)
 
-	fmt.Println("Fiber app is running...")
+	fmt.Printf("%s app is running...\n", cfg.AppName)
 	err := app.Listen(fmt.Sprintf(":%d", cfg.AppPort))
 	if err != nil {
 		panic(err)
