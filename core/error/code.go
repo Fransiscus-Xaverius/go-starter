@@ -20,6 +20,10 @@ const (
 	CodeErrGeneral CodeErr = iota
 	CodeErrValidation
 	CodeErrUserNotFound
+	CodeErrUnauthorizedEmptyAuthorizationHeader
+	CodeErrUnauthorizedInvalidAuthorizationHeader
+	CodeErrUnauthorizedNonBearerAuthorizationHeader
+	CodeErrUnauthorizedEmptyBearerAuthorizationHeader
 )
 
 var (
@@ -27,6 +31,10 @@ var (
 		CodeErrGeneral:      {ErrMessage: "Something went wrong", ErrCode: "ERRDEMO500001", StatusCode: fiber.StatusInternalServerError},
 		CodeErrValidation:   {ErrMessage: "Validation error", ErrCode: "ERRDEMO400002", StatusCode: fiber.StatusBadRequest},
 		CodeErrUserNotFound: {ErrMessage: "User not found", ErrCode: "ERRDEMO404003", StatusCode: fiber.StatusNotFound},
+		CodeErrUnauthorizedEmptyAuthorizationHeader:       {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401004", StatusCode: fiber.StatusUnauthorized},
+		CodeErrUnauthorizedInvalidAuthorizationHeader:     {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401005", StatusCode: fiber.StatusUnauthorized},
+		CodeErrUnauthorizedNonBearerAuthorizationHeader:   {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401006", StatusCode: fiber.StatusUnauthorized},
+		CodeErrUnauthorizedEmptyBearerAuthorizationHeader: {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401007", StatusCode: fiber.StatusUnauthorized},
 	}
 )
 

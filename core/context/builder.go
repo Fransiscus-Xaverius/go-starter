@@ -3,6 +3,7 @@ package context
 import (
 	"context"
 
+	"github.com/cde/go-example/core/modules/auth/dto"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -12,6 +13,7 @@ type (
 	}
 	Logger    struct{}
 	RequestId struct{}
+	Session   struct{}
 )
 
 func NewContextBuilder(ctx context.Context) *Builder {
@@ -42,6 +44,19 @@ func (c *Builder) GetLogger() *log.Entry {
 	}
 
 	return log.NewEntry(NewLogger())
+}
+
+func (c *Builder) SetSession(authResponse dto.AuthorizeResponse) *Builder {
+	c.ctx = context.WithValue(c.ctx, Session{}, authResponse)
+	return c
+}
+
+func (c *Builder) GetSession() *dto.AuthorizeResponse {
+	if session, ok := c.ctx.Value(Session{}).(dto.AuthorizeResponse); ok {
+		return &session
+	}
+
+	return nil
 }
 
 func (c *Builder) Context() context.Context {

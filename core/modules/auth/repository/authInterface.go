@@ -1,10 +1,11 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/cde/go-example/core/modules/auth/dto"
-	"github.com/gofiber/fiber/v2"
 )
 
 type AuthRepositoryInterface interface {
-	Authorize(c *fiber.Ctx, token string) (dto.AuthorizeResponse, error)
+	Authorize(ctx context.Context, token string) (dto.AuthorizeResponse, error)
 }
