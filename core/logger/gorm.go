@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	appContext "github.com/cde/go-example/src/context"
+	appContext "github.com/cde/go-example/core/context"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm/logger"
 )

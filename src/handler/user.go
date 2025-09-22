@@ -3,9 +3,9 @@ package handler
 import (
 	"strconv"
 
-	"github.com/cde/go-example/src/context"
-	appError "github.com/cde/go-example/src/error"
-	userDTO "github.com/cde/go-example/src/modules/user/dto"
+	"github.com/cde/go-example/core/context"
+	appError "github.com/cde/go-example/core/error"
+	"github.com/cde/go-example/src/modules/user/dto"
 	"github.com/cde/go-example/src/modules/user/usecase"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -30,7 +30,7 @@ func (u *UserHandler) registerEndpoints(app *fiber.App) {
 func (u *UserHandler) Create(c *fiber.Ctx) error {
 	var (
 		logger, ctx = context.LoggerWithContext(c)
-		req         userDTO.UserRequest
+		req         dto.UserRequest
 	)
 
 	logger.Info("UserHandler.Create")
@@ -46,7 +46,7 @@ func (u *UserHandler) Create(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.Status(201).JSON(userDTO.UserResponse{
+	return c.Status(201).JSON(dto.UserResponse{
 		ID:    newUser.ID,
 		Name:  newUser.Name,
 		Email: newUser.Email,

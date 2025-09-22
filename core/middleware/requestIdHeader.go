@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/cde/go-example/src/context"
+	"github.com/cde/go-example/core/context"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/gofiber/fiber/v2/utils"

@@ -4,10 +4,11 @@ import (
 	"fmt"
 
 	"github.com/cde/go-example/config"
-	appError "github.com/cde/go-example/src/error"
-	"github.com/cde/go-example/src/factory"
-	"github.com/cde/go-example/src/handler"
-	"github.com/cde/go-example/src/middleware"
+	appError "github.com/cde/go-example/core/error"
+	"github.com/cde/go-example/core/factory"
+	"github.com/cde/go-example/core/handler"
+	"github.com/cde/go-example/core/middleware"
+	handler2 "github.com/cde/go-example/src/handler"
 	userFactory "github.com/cde/go-example/src/modules/user/factory"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -36,7 +37,7 @@ func main() {
 
 	// register handler
 	handler.NewHealthCheckHandler(app)
-	handler.NewUserHandler(app, validate, userUseCase)
+	handler2.NewUserHandler(app, validate, userUseCase)
 
 	fmt.Printf("%s app is running...\n", cfg.AppName)
 	err := app.Listen(fmt.Sprintf(":%d", cfg.AppPort))

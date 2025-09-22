@@ -3,9 +3,9 @@ package usecase
 import (
 	"context"
 
-	appContext "github.com/cde/go-example/src/context"
-	appError "github.com/cde/go-example/src/error"
-	userDTO "github.com/cde/go-example/src/modules/user/dto"
+	appContext "github.com/cde/go-example/core/context"
+	appError "github.com/cde/go-example/core/error"
+	"github.com/cde/go-example/src/modules/user/dto"
 	"github.com/cde/go-example/src/modules/user/entity"
 	userRepository "github.com/cde/go-example/src/modules/user/repository"
 )
@@ -18,7 +18,7 @@ func NewUserUseCase(userRepository userRepository.UserInterface) UserUseCaseInte
 	return &userUseCase{userRepository: userRepository}
 }
 
-func (u userUseCase) CreateUser(ctx context.Context, request *userDTO.UserRequest) (*userDTO.UserResponse, error) {
+func (u userUseCase) CreateUser(ctx context.Context, request *dto.UserRequest) (*dto.UserResponse, error) {
 	var (
 		logger = appContext.LoggerFromContext(ctx)
 	)
@@ -36,14 +36,14 @@ func (u userUseCase) CreateUser(ctx context.Context, request *userDTO.UserReques
 		return nil, err
 	}
 
-	return &userDTO.UserResponse{
+	return &dto.UserResponse{
 		ID:    newRecord.ID,
 		Name:  newRecord.Name,
 		Email: newRecord.Email,
 	}, err
 }
 
-func (u userUseCase) GetUser(ctx context.Context, id int32) (*userDTO.UserResponse, error) {
+func (u userUseCase) GetUser(ctx context.Context, id int32) (*dto.UserResponse, error) {
 	var (
 		logger = appContext.LoggerFromContext(ctx)
 	)
@@ -56,11 +56,11 @@ func (u userUseCase) GetUser(ctx context.Context, id int32) (*userDTO.UserRespon
 	if user == nil {
 		return nil, appError.CodeErrUserNotFound
 	}
-	userEntity := userDTO.UserResponse{}.FromUserEntity(user)
+	userEntity := dto.UserResponse{}.FromUserEntity(user)
 	return &userEntity, nil
 }
 
-func (u userUseCase) ListUsers(ctx context.Context, limit int, offset int) ([]userDTO.UserResponse, error) {
+func (u userUseCase) ListUsers(ctx context.Context, limit int, offset int) ([]dto.UserResponse, error) {
 	var (
 		logger = appContext.LoggerFromContext(ctx)
 	)
@@ -71,9 +71,9 @@ func (u userUseCase) ListUsers(ctx context.Context, limit int, offset int) ([]us
 	if err != nil {
 		return nil, err
 	}
-	var userList []userDTO.UserResponse
+	var userList []dto.UserResponse
 	for _, user := range users {
-		userList = append(userList, userDTO.UserResponse{}.FromUserEntity(&user))
+		userList = append(userList, dto.UserResponse{}.FromUserEntity(&user))
 	}
 	return userList, nil
 }

@@ -1,6 +1,8 @@
 package dto
 
-import "github.com/cde/go-example/src/modules/user/entity"
+import (
+	"github.com/cde/go-example/src/modules/user/entity"
+)
 
 type UserResponse struct {
 	ID    int32  `json:"id"`

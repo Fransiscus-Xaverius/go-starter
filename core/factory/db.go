@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/cde/go-example/config"
-	appLogger "github.com/cde/go-example/src/logger"
+	appLogger "github.com/cde/go-example/core/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
