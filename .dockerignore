@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+README.md
+docs/
+tests/
+tmp/
+*.log
+.air.toml
+.idea/
+.vscode/
+*.test
+coverage.out
+data/
+docker-compose.yml
+swagger.json
