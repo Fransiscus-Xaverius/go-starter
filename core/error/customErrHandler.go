@@ -3,6 +3,8 @@ package error
 import (
 	"errors"
 
+	"github.com/cde/go-example/core/presentation"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,6 +22,20 @@ var CustomErrHandler = func(ctx *fiber.Ctx, err error) error {
 	if errors.As(err, &e) {
 		codeErrMessage.StatusCode = e.Code
 		return codeErrMessage.ToJson(ctx)
+	}
+
+	var validationErrors validator.ValidationErrors
+	if errors.As(err, &validationErrors) {
+		var errList []string
+		for _, err := range validationErrors {
+			errList = append(errList, err.Error())
+		}
+		return presentation.Response[[]string]().
+			SetStatus(false).
+			SetMessage("validation errors").
+			SetStatusCode(fiber.StatusBadRequest).
+			SetData(errList).
+			Json(ctx)
 	}
 
 	var codeErr CodeErrEnum

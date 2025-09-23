@@ -12,7 +12,7 @@ type (
 	}
 )
 
-func NewResponseBuilder[T any]() *ResponseBuilder[T] {
+func Response[T any]() *ResponseBuilder[T] {
 	return &ResponseBuilder[T]{
 		statusCode: fiber.StatusOK,
 		response: dto.Response[T]{
@@ -46,15 +46,30 @@ func (b *ResponseBuilder[T]) SetData(data T) *ResponseBuilder[T] {
 	return b
 }
 
+func (b *ResponseBuilder[T]) Build() dto.Response[T] {
+	return b.response
+}
+
 func (b *ResponseBuilder[T]) SetStatusCode(statusCode int) *ResponseBuilder[T] {
 	b.statusCode = statusCode
 	return b
 }
 
-func (b *ResponseBuilder[T]) Build() dto.Response[T] {
-	return b.response
-}
-
 func (b *ResponseBuilder[T]) Json(ctx *fiber.Ctx) error {
 	return ctx.Status(b.statusCode).JSON(b.Build())
+}
+
+func (b *ResponseBuilder[T]) WithStatusCreated() *ResponseBuilder[T] {
+	b.statusCode = fiber.StatusCreated
+	return b
+}
+
+func (b *ResponseBuilder[T]) WithStatusOk() *ResponseBuilder[T] {
+	b.statusCode = fiber.StatusOK
+	return b
+}
+
+func (b *ResponseBuilder[T]) WithStatusNoContent() *ResponseBuilder[T] {
+	b.statusCode = fiber.StatusNoContent
+	return b
 }

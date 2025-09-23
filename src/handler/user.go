@@ -36,11 +36,11 @@ func (u *UserHandler) Create(c *fiber.Ctx) error {
 
 	logger.Info("UserHandler.Create")
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).SendString(err.Error())
+		return err
 	}
 	err := u.validate.Struct(req)
 	if err != nil {
-		return c.Status(400).SendString(err.Error())
+		return err
 	}
 
 	newUser, err := u.userUseCase.CreateUser(ctx, &req)
@@ -48,7 +48,8 @@ func (u *UserHandler) Create(c *fiber.Ctx) error {
 		return err
 	}
 
-	return presentation.NewResponseBuilder[dto.UserResponse]().
+	return presentation.Response[dto.UserResponse]().
+		WithStatusCreated().
 		SetData(dto.UserResponse{
 			ID:    newUser.ID,
 			Name:  newUser.Name,
@@ -74,7 +75,7 @@ func (u *UserHandler) GetByID(c *fiber.Ctx) error {
 		return err
 	}
 
-	return presentation.NewResponseBuilder[*dto.UserResponse]().
+	return presentation.Response[*dto.UserResponse]().
 		SetData(user).
 		Json(c)
 }
@@ -87,9 +88,9 @@ func (u *UserHandler) List(c *fiber.Ctx) error {
 	logger.Info("UserHandler.List")
 	users, err := u.userUseCase.ListUsers(ctx, 10, 0)
 	if err != nil {
-		return c.Status(500).SendString(err.Error())
+		return err
 	}
-	return presentation.NewResponseBuilder[[]dto.UserResponse]().
+	return presentation.Response[[]dto.UserResponse]().
 		SetData(users).
 		Json(c)
 }
