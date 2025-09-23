@@ -5,6 +5,7 @@ import (
 
 	"github.com/cde/go-example/core/context"
 	appError "github.com/cde/go-example/core/error"
+	"github.com/cde/go-example/core/presentation"
 	"github.com/cde/go-example/src/modules/user/dto"
 	"github.com/cde/go-example/src/modules/user/usecase"
 	"github.com/go-playground/validator/v10"
@@ -46,11 +47,14 @@ func (u *UserHandler) Create(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.Status(201).JSON(dto.UserResponse{
-		ID:    newUser.ID,
-		Name:  newUser.Name,
-		Email: newUser.Email,
-	})
+
+	return presentation.NewResponseBuilder[dto.UserResponse]().
+		SetData(dto.UserResponse{
+			ID:    newUser.ID,
+			Name:  newUser.Name,
+			Email: newUser.Email,
+		}).
+		Json(c)
 }
 
 func (u *UserHandler) GetByID(c *fiber.Ctx) error {
@@ -69,7 +73,10 @@ func (u *UserHandler) GetByID(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(user)
+
+	return presentation.NewResponseBuilder[*dto.UserResponse]().
+		SetData(user).
+		Json(c)
 }
 
 func (u *UserHandler) List(c *fiber.Ctx) error {
@@ -82,5 +89,7 @@ func (u *UserHandler) List(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
-	return c.JSON(users)
+	return presentation.NewResponseBuilder[[]dto.UserResponse]().
+		SetData(users).
+		Json(c)
 }

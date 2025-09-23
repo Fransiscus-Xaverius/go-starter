@@ -2,22 +2,23 @@ package error
 
 import (
 	"github.com/cde/go-example/config"
+	"github.com/cde/go-example/core/presentation/dto"
 	"github.com/gofiber/fiber/v2"
 )
 
 type (
-	CodeErr int
+	CodeErrEnum int
 
-	CodeErrMessage struct {
-		ErrMessage string `json:"error_message"`
-		ErrDetail  string `json:"error_detail,omitempty"`
-		ErrCode    string `json:"error_code"`
-		StatusCode int    `json:"status_code,omitempty"`
+	CodeErr struct {
+		Message    string
+		Detail     string
+		Code       string
+		StatusCode int
 	}
 )
 
 const (
-	CodeErrGeneral CodeErr = iota
+	CodeErrGeneral CodeErrEnum = iota
 	CodeErrValidation
 	CodeErrUserNotFound
 	CodeErrUnauthorizedEmptyAuthorizationHeader
@@ -27,43 +28,47 @@ const (
 )
 
 var (
-	codeErrMap = map[CodeErr]CodeErrMessage{
-		CodeErrGeneral:      {ErrMessage: "Something went wrong", ErrCode: "ERRDEMO500001", StatusCode: fiber.StatusInternalServerError},
-		CodeErrValidation:   {ErrMessage: "Validation error", ErrCode: "ERRDEMO400002", StatusCode: fiber.StatusBadRequest},
-		CodeErrUserNotFound: {ErrMessage: "User not found", ErrCode: "ERRDEMO404003", StatusCode: fiber.StatusNotFound},
-		CodeErrUnauthorizedEmptyAuthorizationHeader:       {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401004", StatusCode: fiber.StatusUnauthorized},
-		CodeErrUnauthorizedInvalidAuthorizationHeader:     {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401005", StatusCode: fiber.StatusUnauthorized},
-		CodeErrUnauthorizedNonBearerAuthorizationHeader:   {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401006", StatusCode: fiber.StatusUnauthorized},
-		CodeErrUnauthorizedEmptyBearerAuthorizationHeader: {ErrMessage: "Unauthorized", ErrCode: "ERRDEMO401007", StatusCode: fiber.StatusUnauthorized},
+	codeErrMap = map[CodeErrEnum]CodeErr{
+		CodeErrGeneral:      {Message: "Something went wrong", Code: "ERRDEMO500001", StatusCode: fiber.StatusInternalServerError},
+		CodeErrValidation:   {Message: "Validation error", Code: "ERRDEMO400002", StatusCode: fiber.StatusBadRequest},
+		CodeErrUserNotFound: {Message: "User not found", Code: "ERRDEMO404003", StatusCode: fiber.StatusNotFound},
+		CodeErrUnauthorizedEmptyAuthorizationHeader:       {Message: "Unauthorized", Code: "ERRDEMO401004", StatusCode: fiber.StatusUnauthorized},
+		CodeErrUnauthorizedInvalidAuthorizationHeader:     {Message: "Unauthorized", Code: "ERRDEMO401005", StatusCode: fiber.StatusUnauthorized},
+		CodeErrUnauthorizedNonBearerAuthorizationHeader:   {Message: "Unauthorized", Code: "ERRDEMO401006", StatusCode: fiber.StatusUnauthorized},
+		CodeErrUnauthorizedEmptyBearerAuthorizationHeader: {Message: "Unauthorized", Code: "ERRDEMO401007", StatusCode: fiber.StatusUnauthorized},
 	}
 )
 
-func (c CodeErr) Error() string {
-	return c.GetCodeErrMessage().ErrMessage
+func (c CodeErrEnum) Error() string {
+	return c.GetCodeErrMessage().Message
 }
 
-func (c CodeErr) GetCodeErrMessage() CodeErrMessage {
+func (c CodeErrEnum) GetCodeErrMessage() CodeErr {
 	if code, ok := codeErrMap[c]; ok {
 		return code
 	}
 	return codeErrMap[CodeErrGeneral]
 }
 
-func (c CodeErr) WithErrorDetail(err error) CodeErrMessage {
+func (c CodeErrEnum) WithErrorDetail(err error) CodeErr {
 	errMessage := c.GetCodeErrMessage()
-	errMessage.ErrDetail = err.Error()
+	errMessage.Detail = err.Error()
 	return errMessage
 }
 
-func (c CodeErrMessage) Error() string {
-	return c.ErrMessage
+func (c CodeErr) Error() string {
+	return c.Message
 }
 
-func (c CodeErrMessage) ToJson(ctx *fiber.Ctx) error {
-	statusCode := c.StatusCode
-	c.StatusCode = 0
-	if !config.Get().AppDebug {
-		c.ErrDetail = ""
+func (c CodeErr) ToJson(ctx *fiber.Ctx) error {
+	data := dto.Response[any]{
+		Status:    false,
+		Message:   c.Message,
+		ErrDetail: c.Detail,
+		ErrCode:   c.Code,
 	}
-	return ctx.Status(statusCode).JSON(c)
+	if !config.Get().AppDebug {
+		data.ErrDetail = ""
+	}
+	return ctx.Status(c.StatusCode).JSON(data)
 }
