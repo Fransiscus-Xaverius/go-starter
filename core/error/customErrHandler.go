@@ -30,9 +30,11 @@ var CustomErrHandler = func(ctx *fiber.Ctx, err error) error {
 		for _, err := range validationErrors {
 			errList = append(errList, err.Error())
 		}
+		codeErr := CodeErrValidation.GetCodeErr()
 		return presentation.Response[[]string]().
 			SetStatus(false).
-			SetMessage(CodeErrValidation.GetCodeErr().Message).
+			SetErrorCode(codeErr.Code).
+			SetMessage(codeErr.Message).
 			SetStatusCode(fiber.StatusBadRequest).
 			SetData(errList).
 			Json(ctx)

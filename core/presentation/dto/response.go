@@ -5,7 +5,7 @@ type (
 		Status    bool   `json:"status"`
 		Message   string `json:"message,omitempty"`
 		ErrDetail string `json:"error_detail,omitempty"`
-		ErrCode   string `json:"err_code,omitempty"`
+		ErrCode   string `json:"error_code,omitempty"`
 		Data      T      `json:"data,omitempty"`
 	}
 )
