@@ -14,7 +14,7 @@ var CustomErrHandler = func(ctx *fiber.Ctx, err error) error {
 	}
 
 	// Status code defaults to 500
-	codeErrMessage := CodeErrGeneral.GetCodeErrMessage()
+	codeErrMessage := CodeErrGeneral.GetCodeErr()
 	codeErrMessage.Detail = err.Error()
 
 	// Retrieve the custom status code if it's a *fiber.Error
@@ -32,7 +32,7 @@ var CustomErrHandler = func(ctx *fiber.Ctx, err error) error {
 		}
 		return presentation.Response[[]string]().
 			SetStatus(false).
-			SetMessage("validation errors").
+			SetMessage(CodeErrValidation.GetCodeErr().Message).
 			SetStatusCode(fiber.StatusBadRequest).
 			SetData(errList).
 			Json(ctx)
@@ -40,7 +40,7 @@ var CustomErrHandler = func(ctx *fiber.Ctx, err error) error {
 
 	var codeErr CodeErrEnum
 	if errors.As(err, &codeErr) {
-		return codeErr.GetCodeErrMessage().ToJson(ctx)
+		return codeErr.GetCodeErr().ToJson(ctx)
 	}
 
 	var errMessage CodeErr

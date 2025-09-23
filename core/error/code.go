@@ -40,10 +40,10 @@ var (
 )
 
 func (c CodeErrEnum) Error() string {
-	return c.GetCodeErrMessage().Message
+	return c.GetCodeErr().Message
 }
 
-func (c CodeErrEnum) GetCodeErrMessage() CodeErr {
+func (c CodeErrEnum) GetCodeErr() CodeErr {
 	if code, ok := codeErrMap[c]; ok {
 		return code
 	}
@@ -51,7 +51,7 @@ func (c CodeErrEnum) GetCodeErrMessage() CodeErr {
 }
 
 func (c CodeErrEnum) WithErrorDetail(err error) CodeErr {
-	errMessage := c.GetCodeErrMessage()
+	errMessage := c.GetCodeErr()
 	errMessage.Detail = err.Error()
 	return errMessage
 }

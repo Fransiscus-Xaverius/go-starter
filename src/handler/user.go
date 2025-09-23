@@ -36,7 +36,7 @@ func (u *UserHandler) Create(c *fiber.Ctx) error {
 
 	logger.Info("UserHandler.Create")
 	if err := c.BodyParser(&req); err != nil {
-		return err
+		return appError.CodeErrValidation.WithErrorDetail(err)
 	}
 	err := u.validate.Struct(req)
 	if err != nil {
