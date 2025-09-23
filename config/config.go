@@ -20,6 +20,8 @@ type Config struct {
 	MySQLMaxOpenConnection int    `envconfig:"MYSQL_MAX_OPEN_CONNECTION" default:"100"`
 	MySQLConnMaxLifetime   int    `envconfig:"MYSQL_CONN_MAX_LIFETIME" default:"5"` // in minutes
 
+	CorsAllowOrigins string `envconfig:"CORS_ALLOW_ORIGINS" default:"*"` // "https://gofiber.io, https://gofiber.net"
+	AllowHeaders     string `envconfig:"CORS_ALLOW_HEADERS" default:"Origin, Content-Type, Accept"`
 }
 
 var cfg *Config

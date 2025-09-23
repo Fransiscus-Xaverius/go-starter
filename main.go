@@ -23,11 +23,11 @@ func main() {
 		ErrorHandler: appError.CustomErrHandler,
 	})
 
-	// Middlewares
-	app.Use(middleware.RequestId, middleware.LoggerContext, middleware.RequestLog)
-
 	// load config
 	cfg := config.Get()
+
+	// Middlewares
+	app.Use(middleware.Cors(cfg), middleware.RequestId, middleware.LoggerContext, middleware.RequestLog)
 
 	// Resolve dependencies
 	validate = validator.New(validator.WithRequiredStructEnabled())
