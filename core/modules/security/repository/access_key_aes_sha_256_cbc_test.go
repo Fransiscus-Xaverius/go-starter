@@ -1,10 +1,10 @@
-package security_test
+package repository_test
 
 import (
 	"testing"
 	"time"
 
-	"github.com/cde/go-example/core/utils/security"
+	"github.com/cde/go-example/core/modules/security/repository"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +28,7 @@ func TestAccessKey_Encrypt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accessKey := security.NewAccessKey(tt.appKey)
+			accessKey := repository.NewAccessKeyAesSha256Cbc(tt.appKey)
 			actual := accessKey.Encrypt(time.Unix(tt.timestamp, 0))
 			assert.Equal(t, tt.expectedEncrypt, actual)
 			decrypt, err := accessKey.Decrypt(actual)

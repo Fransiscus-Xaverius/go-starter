@@ -1,4 +1,4 @@
-package security
+package repository
 
 import (
 	"bytes"
@@ -11,23 +11,17 @@ import (
 	"time"
 )
 
-//go:generate mockgen -destination=mocks/mock_AccessKey.go -package=mocks . AccessKey
 type (
-	AccessKey interface {
-		Encrypt(currTime time.Time) string
-		Decrypt(encrypted string) (string, error)
-	}
-
-	accessKey struct {
+	accessKeyAesSha256Cbc struct {
 		appKey string
 	}
 )
 
-func NewAccessKey(appKey string) AccessKey {
-	return &accessKey{appKey: appKey}
+func NewAccessKeyAesSha256Cbc(appKey string) AccessKey {
+	return &accessKeyAesSha256Cbc{appKey: appKey}
 }
 
-func (a accessKey) Encrypt(currTime time.Time) string {
+func (a accessKeyAesSha256Cbc) Encrypt(currTime time.Time) string {
 	timestamp := currTime.Unix()
 	plain := fmt.Sprintf("%s@%d", a.appKey, timestamp)
 
@@ -56,7 +50,7 @@ func (a accessKey) Encrypt(currTime time.Time) string {
 	return base64.StdEncoding.EncodeToString([]byte(encodeToString))
 }
 
-func (a accessKey) Decrypt(encrypted string) (string, error) {
+func (a accessKeyAesSha256Cbc) Decrypt(encrypted string) (string, error) {
 	decodeString, err := base64.StdEncoding.DecodeString(encrypted)
 	if err != nil {
 		return "", err

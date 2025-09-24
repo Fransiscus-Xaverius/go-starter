@@ -1,8 +1,13 @@
 package dto
 
 type (
+	AuthorizeRequest struct {
+		Token string `json:"token"`
+	}
+
 	AuthorizeResponse struct {
-		Status string `json:"status"`
+		Status string                `json:"status"`
+		Data   AuthorizeResponseData `json:"data"`
 	}
 
 	AuthorizeResponseData struct {

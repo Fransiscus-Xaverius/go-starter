@@ -1,4 +1,4 @@
-package http_client_test
+package repository_test
 
 import (
 	"context"
@@ -8,8 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cde/go-example/core/modules/http_client"
+	"github.com/cde/go-example/core/modules/http_client/repository"
 	presentationDto "github.com/cde/go-example/core/presentation/dto"
-	"github.com/cde/go-example/core/utils/http_client"
 	"github.com/cde/go-example/src/modules/user/dto"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/utils"
@@ -23,12 +24,12 @@ func TestIntegrationGetUser(t *testing.T) {
 	ctx := context.Background()
 
 	// Use the real HttpClientRepository
-	httpClientRepo := http_client.NewHttpClientRepository(&http.Client{
+	httpClientRepo := repository.NewHttpClientRepository(&http.Client{
 		Timeout: 5 * time.Second,
 	}).EnableDebug()
 
 	// Use v2.Get to make a real HTTP GET request to the Cat Facts API
-	response, err := http_client.Get[presentationDto.Response[dto.UserResponse]](ctx, httpClientRepo, "http://localhost:3001/users/1", nil, nil)
+	response, err := http_client.Get[presentationDto.Response[dto.UserResponse]](ctx, httpClientRepo, "http://localhost:3000/users/1", nil, nil)
 	assert.NoError(t, err)
 	assert.Equal(t, fiber.StatusOK, response.StatusCode)
 
@@ -70,7 +71,7 @@ func TestIntegrationCreateUser(t *testing.T) {
 			ctx := context.Background()
 
 			// Use the real HttpClientRepository
-			httpClientRepo := http_client.NewHttpClientRepository(&http.Client{
+			httpClientRepo := repository.NewHttpClientRepository(&http.Client{
 				Timeout: 5 * time.Second,
 			}).EnableDebug()
 

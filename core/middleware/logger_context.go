@@ -2,11 +2,8 @@ package middleware
 
 import (
 	"github.com/cde/go-example/core/context"
+	"github.com/cde/go-example/core/vars"
 	"github.com/gofiber/fiber/v2"
-)
-
-const (
-	LoggerRequestId = "request_id"
 )
 
 func LoggerContext(appName string, appVersion string) func(c *fiber.Ctx) error {
@@ -18,7 +15,7 @@ func LoggerContext(appName string, appVersion string) func(c *fiber.Ctx) error {
 			context.
 				NewLogger().
 				WithField(
-					LoggerRequestId,
+					vars.LoggerFieldRequestId,
 					value,
 				).
 				WithField(

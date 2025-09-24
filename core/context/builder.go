@@ -46,14 +46,14 @@ func (c *Builder) GetLogger() *log.Entry {
 	return log.NewEntry(NewLogger())
 }
 
-func (c *Builder) SetSession(authResponse dto.AuthorizeResponse) *Builder {
+func (c *Builder) SetSession(authResponse *dto.AuthorizeResponse) *Builder {
 	c.ctx = context.WithValue(c.ctx, Session{}, authResponse)
 	return c
 }
 
 func (c *Builder) GetSession() *dto.AuthorizeResponse {
-	if session, ok := c.ctx.Value(Session{}).(dto.AuthorizeResponse); ok {
-		return &session
+	if session, ok := c.ctx.Value(Session{}).(*dto.AuthorizeResponse); ok {
+		return session
 	}
 
 	return nil
