@@ -38,8 +38,8 @@ type (
 	}
 )
 
-func NewHttpClientRepository(client *http.Client, debug bool) HttpClientRepository {
-	return &httpClientRepository{client: client, debug: debug}
+func NewHttpClientRepository(client *http.Client) HttpClientRepository {
+	return &httpClientRepository{client: client}
 }
 
 func (v httpClientRepository) EnableDebug() HttpClientRepository {
