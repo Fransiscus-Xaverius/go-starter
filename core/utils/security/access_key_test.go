@@ -1,10 +1,10 @@
-package utils_test
+package security_test
 
 import (
 	"testing"
 	"time"
 
-	"github.com/cde/go-example/core/utils"
+	"github.com/cde/go-example/core/utils/security"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +27,7 @@ func TestAccessKey_Encrypt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accessKey := utils.NewAccessKey(tt.appKey)
+			accessKey := security.NewAccessKey(tt.appKey)
 			actual := accessKey.Encrypt(time.Unix(tt.timestamp, 0))
 			assert.Equal(t, tt.expectedEncrypt, actual)
 			decrypt, err := accessKey.Decrypt(actual)

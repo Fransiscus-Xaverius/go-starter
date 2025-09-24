@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/cde/go-example/core/modules/auth/dto"
-	"github.com/cde/go-example/core/utils"
+	"github.com/cde/go-example/core/utils/security"
 )
 
 type AyoAuthHttpClient struct {
-	accessKey       *utils.AccessKey
+	accessKey       *security.AccessKey
 	headerAccessKey string
 }
 

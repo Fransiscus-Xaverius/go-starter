@@ -24,3 +24,13 @@ source ~/.zshrc
 # check mockgen executable
 which mockgen
 ```
+
+## Docker
+
+```shell
+docker compose up -d
+
+docker build -t demo:v1.0.1 .
+
+docker run --name demo -e MYSQL_HOST=host.docker.internal -p 3000:3000 -d demo:v1.0.0
+```

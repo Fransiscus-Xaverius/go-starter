@@ -41,17 +41,17 @@ func (b *ResponseBuilder[T]) SetErrorCode(code string) *ResponseBuilder[T] {
 	return b
 }
 
-func (b *ResponseBuilder[T]) SetData(data T) *ResponseBuilder[T] {
-	b.response.Data = data
-	return b
-}
-
 func (b *ResponseBuilder[T]) Build() dto.Response[T] {
 	return b.response
 }
 
 func (b *ResponseBuilder[T]) SetStatusCode(statusCode int) *ResponseBuilder[T] {
 	b.statusCode = statusCode
+	return b
+}
+
+func (b *ResponseBuilder[T]) WithData(data T) *ResponseBuilder[T] {
+	b.response.Data = data
 	return b
 }
 

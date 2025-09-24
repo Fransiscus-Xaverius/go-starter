@@ -36,7 +36,7 @@ var CustomErrHandler = func(ctx *fiber.Ctx, err error) error {
 			SetErrorCode(codeErr.Code).
 			SetMessage(codeErr.Message).
 			SetStatusCode(fiber.StatusBadRequest).
-			SetData(errList).
+			WithData(errList).
 			Json(ctx)
 	}
 

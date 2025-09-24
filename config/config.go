@@ -11,7 +11,7 @@ type Config struct {
 	AppPort    int    `envconfig:"APP_PORT" default:"3000"`
 	AppDebug   bool   `envconfig:"APP_DEBUG" default:"true"`
 
-	MySQLHost              string `envconfig:"MYSQL_HOST" default:"localhost"`
+	MySQLHost              string `envconfig:"MYSQL_HOST" default:"localhost"` // host.docker.internal
 	MySQLPort              int    `envconfig:"MYSQL_PORT" default:"3306"`
 	MySQLUsername          string `envconfig:"MYSQL_USERNAME" default:"root"`
 	MySQLPassword          string `envconfig:"MYSQL_PASSWORD" default:"password12345"`

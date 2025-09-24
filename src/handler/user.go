@@ -48,13 +48,9 @@ func (u *UserHandler) Create(c *fiber.Ctx) error {
 		return err
 	}
 
-	return presentation.Response[dto.UserResponse]().
+	return presentation.Response[*dto.UserResponse]().
 		WithStatusCreated().
-		SetData(dto.UserResponse{
-			ID:    newUser.ID,
-			Name:  newUser.Name,
-			Email: newUser.Email,
-		}).
+		WithData(newUser).
 		Json(c)
 }
 
@@ -76,7 +72,7 @@ func (u *UserHandler) GetByID(c *fiber.Ctx) error {
 	}
 
 	return presentation.Response[*dto.UserResponse]().
-		SetData(user).
+		WithData(user).
 		Json(c)
 }
 
@@ -91,6 +87,6 @@ func (u *UserHandler) List(c *fiber.Ctx) error {
 		return err
 	}
 	return presentation.Response[[]dto.UserResponse]().
-		SetData(users).
+		WithData(users).
 		Json(c)
 }
