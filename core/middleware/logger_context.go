@@ -5,17 +5,31 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func LoggerContext(c *fiber.Ctx) error {
-	ctx := c.Context()
-	builder := context.NewContextBuilder(ctx).
-		SetLogger(
+const (
+	LoggerRequestId = "request_id"
+)
+
+func LoggerContext(appName string, appVersion string) func(c *fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		ctx := c.Context()
+		value := ctx.Value(context.RequestId{})
+		c.Locals(
+			context.Logger{},
 			context.
 				NewLogger().
 				WithField(
-					"request_id",
-					ctx.Value(context.RequestId{}),
-				),
-		)
-	c.Locals(builder.Context())
-	return c.Next()
+					LoggerRequestId,
+					value,
+				).
+				WithField(
+					"app_name",
+					appName,
+				).
+				WithField(
+					"app_version",
+					appVersion,
+				))
+
+		return c.Next()
+	}
 }

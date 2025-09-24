@@ -10,6 +10,7 @@ import (
 	reflect "reflect"
 
 	http_client "github.com/cde/go-example/core/utils/http_client"
+	dto "github.com/cde/go-example/core/utils/http_client/dto"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -51,10 +52,10 @@ func (mr *MockHttpClientRepositoryMockRecorder) DisableDebug() *gomock.Call {
 }
 
 // Do mocks base method.
-func (m *MockHttpClientRepository) Do(arg0 context.Context, arg1 *http.Request, arg2 map[string]string) (*http_client.ResponseByte, error) {
+func (m *MockHttpClientRepository) Do(arg0 context.Context, arg1 *http.Request, arg2 map[string]string) (*dto.ResponseByte, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Do", arg0, arg1, arg2)
-	ret0, _ := ret[0].(*http_client.ResponseByte)
+	ret0, _ := ret[0].(*dto.ResponseByte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

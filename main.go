@@ -6,9 +6,9 @@ import (
 	"github.com/cde/go-example/config"
 	appError "github.com/cde/go-example/core/error"
 	"github.com/cde/go-example/core/factory"
-	"github.com/cde/go-example/core/handler"
+	coreHandler "github.com/cde/go-example/core/handler"
 	"github.com/cde/go-example/core/middleware"
-	handler2 "github.com/cde/go-example/src/handler"
+	"github.com/cde/go-example/src/handler"
 	userFactory "github.com/cde/go-example/src/modules/user/factory"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -19,7 +19,7 @@ var validate *validator.Validate
 
 func main() {
 	app := fiber.New(fiber.Config{
-		// Override default error handler
+		// Override default error coreHandler
 		ErrorHandler: appError.CustomErrHandler,
 	})
 
@@ -27,7 +27,12 @@ func main() {
 	cfg := config.Get()
 
 	// Middlewares
-	app.Use(middleware.Cors(cfg), middleware.RequestId, middleware.LoggerContext, middleware.RequestLog)
+	app.Use(
+		middleware.Cors(cfg.CorsAllowOrigins, cfg.AllowHeaders),
+		middleware.RequestId,
+		middleware.LoggerContext(cfg.AppName, cfg.AppVersion),
+		middleware.RequestLog,
+	)
 
 	// Resolve dependencies
 	validate = validator.New(validator.WithRequiredStructEnabled())
@@ -35,9 +40,11 @@ func main() {
 	userRepository := userFactory.ResolveUserRepository(db)
 	userUseCase := userFactory.ResolveUserUseCase(userRepository)
 
-	// register handler
-	handler.NewHealthCheckHandler(app)
-	handler2.NewUserHandler(app, validate, userUseCase)
+	// register coreHandler
+	coreHandler.NewHealthCheckHandler(app)
+
+	// register appHandler
+	handler.NewUserHandler(app, validate, userUseCase)
 
 	fmt.Printf("%s app is running...\n", cfg.AppName)
 	err := app.Listen(fmt.Sprintf(":%d", cfg.AppPort))

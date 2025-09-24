@@ -1,35 +1,28 @@
 package http_client
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
 
 	appContext "github.com/cde/go-example/core/context"
-	"github.com/google/uuid"
+	"github.com/cde/go-example/core/middleware"
+	"github.com/cde/go-example/core/utils/http_client/dto"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/utils"
 )
 
 //go:generate mockgen -destination=mocks/mock_HttpClientRepository.go -package=mocks . HttpClientRepository
 type (
-	Response[T any] struct {
-		Content    T
-		StatusCode int
-		Duration   int64 // in millisecond
-		Header     http.Header
-	}
-
-	ResponseByte struct {
-		Status   int
-		Content  []byte
-		Header   http.Header
-		Duration time.Duration
-	}
-
 	HttpClientRepository interface {
 		EnableDebug() HttpClientRepository
 		DisableDebug() HttpClientRepository
-		Do(ctx context.Context, request *http.Request, headers map[string]string) (*ResponseByte, error)
+		Do(ctx context.Context, request *http.Request, headers map[string]string) (*dto.ResponseByte, error)
 	}
 
 	httpClientRepository struct {
@@ -52,7 +45,7 @@ func (v httpClientRepository) DisableDebug() HttpClientRepository {
 	return v
 }
 
-func (v httpClientRepository) Do(ctx context.Context, request *http.Request, headers map[string]string) (*ResponseByte, error) {
+func (v httpClientRepository) Do(ctx context.Context, request *http.Request, headers map[string]string) (*dto.ResponseByte, error) {
 	defer func() {
 		if request != nil && request.Body != nil {
 			_ = request.Body.Close()
@@ -66,17 +59,20 @@ func (v httpClientRepository) Do(ctx context.Context, request *http.Request, hea
 
 	requestId := contextBuilder.GetRequestId()
 	if requestId == "" {
-		requestId = uuid.New().String()
+		requestId = utils.UUIDv4()
+		logger = logger.WithField(middleware.LoggerRequestId, requestId)
 	}
 
+	reqHeaders := make(http.Header)
+	reqHeaders[fiber.HeaderXRequestID] = []string{requestId}
 	if headers != nil && len(headers) > 0 {
-		reqHeaders := make(http.Header)
 		for headerKey, headerValue := range headers {
 			reqHeaders[headerKey] = []string{headerValue}
 		}
 		request.Header = reqHeaders
 	}
 
+	logger = logger.WithField("span_id", utils.UUIDv4())
 	if request != nil && v.debug {
 		logger.WithField("method", request.Method).
 			WithField("url", request.URL.String()).
@@ -105,14 +101,102 @@ func (v httpClientRepository) Do(ctx context.Context, request *http.Request, hea
 	if response != nil && v.debug {
 		logger.WithField("status_code", response.StatusCode).
 			WithField("headers", response.Header).
-			WithField("duration", duration).
+			WithField("duration", fmt.Sprintf("%v", duration)).
 			Info("end request")
 	}
 
-	return &ResponseByte{
-		Status:   response.StatusCode,
-		Content:  content,
-		Header:   response.Header,
-		Duration: duration,
+	return &dto.ResponseByte{
+		StatusCode: response.StatusCode,
+		Content:    content,
+		Header:     response.Header,
+		Duration:   duration,
+	}, nil
+}
+
+func marshalToBuffer[T any](content T) (*bytes.Buffer, error) {
+	marshal, err := json.Marshal(content)
+	if err != nil {
+		return nil, err
+	}
+
+	return bytes.NewBuffer(marshal), nil
+}
+
+func unmarshalResponseToError(response *dto.ResponseByte) error {
+	if response == nil {
+		return dto.ResponseErr{
+			Content: map[string]any{
+				"message": errors.New("nil response"),
+			},
+		}
+	}
+	contentByte := response.Content
+
+	responseErr := dto.ResponseErr{
+		Content:    nil,
+		StatusCode: response.StatusCode,
+		Duration:   response.Duration,
+		Header:     response.Header,
+	}
+
+	if contentByte == nil || len(contentByte) == 0 {
+		return responseErr
+	}
+
+	errData := map[string]any{}
+	err := json.Unmarshal(contentByte, &errData)
+	if err != nil {
+		responseErr.Content = map[string]any{
+			"message": string(contentByte),
+		}
+
+		return responseErr
+	}
+
+	responseErr.Content = errData
+	return responseErr
+}
+
+func errToResponseError(err error, response *dto.ResponseByte) *dto.ResponseErr {
+	responseErr := dto.ResponseErr{
+		Content: map[string]any{
+			"message": err.Error(),
+		},
+	}
+	if response == nil {
+		return &responseErr
+	}
+
+	responseErr.Duration = response.Duration
+	responseErr.StatusCode = response.StatusCode
+	responseErr.Header = response.Header
+	return &responseErr
+}
+
+func send[ResT any](
+	ctx context.Context,
+	client HttpClientRepository,
+	request *http.Request,
+	headers map[string]string,
+) (*dto.Response[ResT], error) {
+	resp, err := client.Do(ctx, request, headers)
+	if err != nil {
+		return nil, errToResponseError(err, resp)
+	}
+	var content ResT
+	if !(resp.StatusCode >= fiber.StatusOK && resp.StatusCode < fiber.StatusBadRequest) {
+		return nil, unmarshalResponseToError(resp)
+	}
+
+	err = json.Unmarshal(resp.Content, &content)
+	if err != nil {
+		return nil, errToResponseError(err, resp)
+	}
+
+	return &dto.Response[ResT]{
+		Content:    content,
+		StatusCode: resp.StatusCode,
+		Duration:   resp.Duration,
+		Header:     resp.Header,
 	}, nil
 }

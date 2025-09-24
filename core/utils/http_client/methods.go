@@ -3,9 +3,11 @@ package http_client
 import (
 	"context"
 	"net/http"
+
+	"github.com/cde/go-example/core/utils/http_client/dto"
 )
 
-func Post[ReqT any, ResT any](ctx context.Context, client HttpClientRepository, url string, payload ReqT, headers map[string]string) (*Response[ResT], error) {
+func Post[ReqT any, ResT any](ctx context.Context, client HttpClientRepository, url string, payload ReqT, headers map[string]string) (*dto.Response[ResT], error) {
 	buffer, err := marshalToBuffer[ReqT](payload)
 	if err != nil {
 		return nil, err
@@ -18,7 +20,7 @@ func Post[ReqT any, ResT any](ctx context.Context, client HttpClientRepository, 
 	return send[ResT](ctx, client, request, headers)
 }
 
-func Get[ResT any](ctx context.Context, client HttpClientRepository, url string, queries map[string][]string, headers map[string]string) (*Response[ResT], error) {
+func Get[ResT any](ctx context.Context, client HttpClientRepository, url string, queries map[string][]string, headers map[string]string) (*dto.Response[ResT], error) {
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -36,7 +38,7 @@ func Get[ResT any](ctx context.Context, client HttpClientRepository, url string,
 	return send[ResT](ctx, client, request, headers)
 }
 
-func Put[ReqT any, ResT any](ctx context.Context, client HttpClientRepository, url string, payload ReqT, headers map[string]string) (*Response[ResT], error) {
+func Put[ReqT any, ResT any](ctx context.Context, client HttpClientRepository, url string, payload ReqT, headers map[string]string) (*dto.Response[ResT], error) {
 	buffer, err := marshalToBuffer[ReqT](payload)
 	if err != nil {
 		return nil, err
@@ -49,7 +51,7 @@ func Put[ReqT any, ResT any](ctx context.Context, client HttpClientRepository, u
 	return send[ResT](ctx, client, request, headers)
 }
 
-func Delete[ResT any](ctx context.Context, client HttpClientRepository, url string, headers map[string]string) (*Response[ResT], error) {
+func Delete[ResT any](ctx context.Context, client HttpClientRepository, url string, headers map[string]string) (*dto.Response[ResT], error) {
 	request, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return nil, err

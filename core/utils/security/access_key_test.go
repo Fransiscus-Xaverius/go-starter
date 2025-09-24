@@ -6,6 +6,7 @@ import (
 
 	"github.com/cde/go-example/core/utils/security"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAccessKey_Encrypt(t *testing.T) {
@@ -31,7 +32,7 @@ func TestAccessKey_Encrypt(t *testing.T) {
 			actual := accessKey.Encrypt(time.Unix(tt.timestamp, 0))
 			assert.Equal(t, tt.expectedEncrypt, actual)
 			decrypt, err := accessKey.Decrypt(actual)
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, tt.expectedDecrypt, decrypt)
 		})
 	}

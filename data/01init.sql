@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS user
     `email`        VARCHAR(255)                                   NOT NULL,
     `name`         VARCHAR(255)                                   NOT NULL,
     `password`     TEXT                                           NOT NULL COMMENT 'bcrypt(plain_password)',
-    `created_at`   bigint(20) UNSIGNED                            NOT NULL,
+    `created_at`   bigint(10) UNSIGNED                            NOT NULL,
     `created_by`   bigint(20) UNSIGNED                            NOT NULL,
-    `updated_at`   bigint(20) UNSIGNED                            NOT NULL,
+    `updated_at`   bigint(10) UNSIGNED                            NOT NULL,
     `updated_by`   bigint(20) UNSIGNED                            NOT NULL,
     UNIQUE KEY `idx_unique_email` (`email`) USING HASH,
     FULLTEXT KEY `idx_fulltext_name` (`name`)

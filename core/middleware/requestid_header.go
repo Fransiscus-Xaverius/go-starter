@@ -9,6 +9,6 @@ import (
 
 var RequestId = requestid.New(requestid.Config{
 	Header:     fiber.HeaderXRequestID,
-	Generator:  utils.UUID,
+	Generator:  utils.UUIDv4,
 	ContextKey: context.RequestId{},
 })

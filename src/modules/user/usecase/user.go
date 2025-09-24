@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	appContext "github.com/cde/go-example/core/context"
 	appError "github.com/cde/go-example/core/error"
@@ -24,12 +25,17 @@ func (u userUseCase) CreateUser(ctx context.Context, request *dto.UserRequest) (
 	)
 
 	logger.Info("userUseCase.CreateUser")
+	nowUnix := time.Now().Unix()
 	newRecord, err := u.userRepository.Create(
 		ctx,
 		&entity.User{
-			Name:     request.Name,
-			Email:    request.Email,
-			Password: request.Password,
+			Name:      request.Name,
+			Email:     request.Email,
+			Password:  request.Password,
+			CreatedAt: nowUnix,
+			CreatedBy: 1,
+			UpdatedAt: nowUnix,
+			UpdatedBy: 1,
 		},
 	)
 	if err != nil {
