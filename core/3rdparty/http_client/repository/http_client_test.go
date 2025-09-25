@@ -29,7 +29,8 @@ func TestIntegrationGetUser(t *testing.T) {
 	}).EnableDebug()
 
 	// Use v2.Get to make a real HTTP GET request to the Cat Facts API
-	response, err := http_client.Get[presentationDto.Response[dto.UserResponse]](ctx, httpClientRepo, "http://localhost:3000/users/1", nil, nil)
+	response, err := http_client.Get[presentationDto.Response[dto.UserResponse]](ctx, httpClientRepo, "http://localhost:4000/users/1", nil, nil)
+
 	assert.NoError(t, err)
 	assert.Equal(t, fiber.StatusOK, response.StatusCode)
 
@@ -79,7 +80,7 @@ func TestIntegrationCreateUser(t *testing.T) {
 			response, err := http_client.Post[*dto.UserRequest, presentationDto.Response[dto.UserResponse]](
 				ctx,
 				httpClientRepo,
-				"http://localhost:3000/users",
+				"http://localhost:4000/users",
 				tt.request,
 				map[string]string{
 					"content-type": "application/json",

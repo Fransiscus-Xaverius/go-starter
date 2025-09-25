@@ -2,7 +2,7 @@ package dto
 
 type (
 	Response[T any] struct {
-		Status    bool   `json:"status,omitempty"`
+		Status    bool   `json:"status"`
 		Message   string `json:"message,omitempty"`
 		ErrDetail string `json:"error_detail,omitempty"`
 		ErrCode   string `json:"error_code,omitempty"`

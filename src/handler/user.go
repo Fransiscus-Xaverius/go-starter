@@ -49,6 +49,7 @@ func (u *UserHandler) Create(c *fiber.Ctx) error {
 	}
 
 	return presentation.Response[*dto.UserResponse]().
+		SetStatus(true).
 		WithStatusCreated().
 		WithData(newUser).
 		Json(c)

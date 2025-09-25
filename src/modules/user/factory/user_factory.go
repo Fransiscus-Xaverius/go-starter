@@ -1,16 +1,17 @@
 package factory
 
 import (
-	repository2 "github.com/cde/go-example/src/modules/user/repository"
+	userRepository "github.com/cde/go-example/src/modules/user/repository"
 	"github.com/cde/go-example/src/modules/user/usecase"
 	"gorm.io/gorm"
 )
 
-func ResolveUserRepository(db *gorm.DB) repository2.UserInterface {
-	//return repository.NewUserDummy()
-	return repository2.NewUserMySQL(db)
+func ResolveUserRepository(db *gorm.DB) userRepository.UserInterface {
+	//return userRepository.NewUserDummy()
+	return userRepository.NewUserMySQL(db)
+	//return userRepository.NewUserPostgreSQL()
 }
 
-func ResolveUserUseCase(userRepository repository2.UserInterface) usecase.UserInterface {
+func ResolveUserUseCase(userRepository userRepository.UserInterface) usecase.UserInterface {
 	return usecase.NewUserUseCase(userRepository)
 }
