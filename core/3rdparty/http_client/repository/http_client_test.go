@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cde/go-example/core/modules/http_client"
-	"github.com/cde/go-example/core/modules/http_client/repository"
+	"github.com/cde/go-example/core/3rdparty/http_client"
+	"github.com/cde/go-example/core/3rdparty/http_client/repository"
 	presentationDto "github.com/cde/go-example/core/presentation/dto"
 	"github.com/cde/go-example/src/modules/user/dto"
 	"github.com/gofiber/fiber/v2"
@@ -23,7 +23,7 @@ func TestIntegrationGetUser(t *testing.T) {
 	// Create context
 	ctx := context.Background()
 
-	// Use the real HttpClientRepository
+	// Use the real HttpClientInterface
 	httpClientRepo := repository.NewHttpClientRepository(&http.Client{
 		Timeout: 5 * time.Second,
 	}).EnableDebug()
@@ -70,7 +70,7 @@ func TestIntegrationCreateUser(t *testing.T) {
 			// Create context
 			ctx := context.Background()
 
-			// Use the real HttpClientRepository
+			// Use the real HttpClientInterface
 			httpClientRepo := repository.NewHttpClientRepository(&http.Client{
 				Timeout: 5 * time.Second,
 			}).EnableDebug()

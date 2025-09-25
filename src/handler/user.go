@@ -13,11 +13,11 @@ import (
 )
 
 type UserHandler struct {
-	userUseCase usecase.UserUseCaseInterface
+	userUseCase usecase.UserInterface
 	validate    *validator.Validate
 }
 
-func NewUserHandler(app *fiber.App, validate *validator.Validate, userUseCase usecase.UserUseCaseInterface) {
+func NewUserHandler(app *fiber.App, validate *validator.Validate, userUseCase usecase.UserInterface) {
 	handler := &UserHandler{userUseCase: userUseCase, validate: validate}
 	handler.registerEndpoints(app)
 }

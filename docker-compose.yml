@@ -11,10 +11,19 @@ services:
     networks:
       - demo-net
     command: --default-authentication-plugin=mysql_native_password
-
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "6363:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--requirepass", "secret"]
+    networks:
+      - demo-net
 networks:
   demo-net:
     driver: bridge
 
 volumes:
   mysql_data:
+  redis_data:

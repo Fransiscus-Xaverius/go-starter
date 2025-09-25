@@ -2,6 +2,7 @@ package repository
 
 import (
 	"bytes"
+	"context"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/sha256"
@@ -17,11 +18,11 @@ type (
 	}
 )
 
-func NewAccessKeyAesSha256Cbc(appKey string) AccessKey {
+func NewAccessKeyAesSha256Cbc(appKey string) AccessKeyInterface {
 	return &accessKeyAesSha256Cbc{appKey: appKey}
 }
 
-func (a accessKeyAesSha256Cbc) Encrypt(currTime time.Time) string {
+func (a accessKeyAesSha256Cbc) Encrypt(ctx context.Context, currTime time.Time) string {
 	timestamp := currTime.Unix()
 	plain := fmt.Sprintf("%s@%d", a.appKey, timestamp)
 
@@ -50,7 +51,7 @@ func (a accessKeyAesSha256Cbc) Encrypt(currTime time.Time) string {
 	return base64.StdEncoding.EncodeToString([]byte(encodeToString))
 }
 
-func (a accessKeyAesSha256Cbc) Decrypt(encrypted string) (string, error) {
+func (a accessKeyAesSha256Cbc) Decrypt(ctx context.Context, encrypted string) (string, error) {
 	decodeString, err := base64.StdEncoding.DecodeString(encrypted)
 	if err != nil {
 		return "", err

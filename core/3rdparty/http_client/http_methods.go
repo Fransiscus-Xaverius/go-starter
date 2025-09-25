@@ -7,8 +7,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/cde/go-example/core/modules/http_client/dto"
-	"github.com/cde/go-example/core/modules/http_client/repository"
+	dto2 "github.com/cde/go-example/core/3rdparty/http_client/dto"
+	"github.com/cde/go-example/core/3rdparty/http_client/repository"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -21,9 +21,9 @@ func marshalToBuffer[T any](content T) (*bytes.Buffer, error) {
 	return bytes.NewBuffer(marshal), nil
 }
 
-func unmarshalResponseToError(response *dto.ResponseByte) error {
+func unmarshalResponseToError(response *dto2.ResponseByte) error {
 	if response == nil {
-		return dto.ResponseErr{
+		return dto2.ResponseErr{
 			Content: map[string]any{
 				"message": errors.New("nil response"),
 			},
@@ -31,7 +31,7 @@ func unmarshalResponseToError(response *dto.ResponseByte) error {
 	}
 	contentByte := response.Content
 
-	responseErr := dto.ResponseErr{
+	responseErr := dto2.ResponseErr{
 		Content:    nil,
 		StatusCode: response.StatusCode,
 		Duration:   response.Duration,
@@ -56,8 +56,8 @@ func unmarshalResponseToError(response *dto.ResponseByte) error {
 	return responseErr
 }
 
-func errToResponseError(err error, response *dto.ResponseByte) *dto.ResponseErr {
-	responseErr := dto.ResponseErr{
+func errToResponseError(err error, response *dto2.ResponseByte) *dto2.ResponseErr {
+	responseErr := dto2.ResponseErr{
 		Content: map[string]any{
 			"message": err.Error(),
 		},
@@ -74,10 +74,10 @@ func errToResponseError(err error, response *dto.ResponseByte) *dto.ResponseErr 
 
 func send[ResT any](
 	ctx context.Context,
-	client repository.HttpClientRepository,
+	client repository.HttpClientInterface,
 	request *http.Request,
 	headers map[string]string,
-) (*dto.Response[ResT], error) {
+) (*dto2.Response[ResT], error) {
 	resp, err := client.Do(ctx, request, headers)
 	if err != nil {
 		return nil, errToResponseError(err, resp)
@@ -92,7 +92,7 @@ func send[ResT any](
 		return nil, errToResponseError(err, resp)
 	}
 
-	return &dto.Response[ResT]{
+	return &dto2.Response[ResT]{
 		Content:    content,
 		StatusCode: resp.StatusCode,
 		Duration:   resp.Duration,
@@ -100,7 +100,7 @@ func send[ResT any](
 	}, nil
 }
 
-func Post[ReqT any, ResT any](ctx context.Context, client repository.HttpClientRepository, url string, payload ReqT, headers map[string]string) (*dto.Response[ResT], error) {
+func Post[ReqT any, ResT any](ctx context.Context, client repository.HttpClientInterface, url string, payload ReqT, headers map[string]string) (*dto2.Response[ResT], error) {
 	buffer, err := marshalToBuffer[ReqT](payload)
 	if err != nil {
 		return nil, err
@@ -113,7 +113,7 @@ func Post[ReqT any, ResT any](ctx context.Context, client repository.HttpClientR
 	return send[ResT](ctx, client, request, headers)
 }
 
-func Get[ResT any](ctx context.Context, client repository.HttpClientRepository, url string, queries map[string][]string, headers map[string]string) (*dto.Response[ResT], error) {
+func Get[ResT any](ctx context.Context, client repository.HttpClientInterface, url string, queries map[string][]string, headers map[string]string) (*dto2.Response[ResT], error) {
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func Get[ResT any](ctx context.Context, client repository.HttpClientRepository, 
 	return send[ResT](ctx, client, request, headers)
 }
 
-func Put[ReqT any, ResT any](ctx context.Context, client repository.HttpClientRepository, url string, payload ReqT, headers map[string]string) (*dto.Response[ResT], error) {
+func Put[ReqT any, ResT any](ctx context.Context, client repository.HttpClientInterface, url string, payload ReqT, headers map[string]string) (*dto2.Response[ResT], error) {
 	buffer, err := marshalToBuffer[ReqT](payload)
 	if err != nil {
 		return nil, err
@@ -144,7 +144,7 @@ func Put[ReqT any, ResT any](ctx context.Context, client repository.HttpClientRe
 	return send[ResT](ctx, client, request, headers)
 }
 
-func Delete[ResT any](ctx context.Context, client repository.HttpClientRepository, url string, headers map[string]string) (*dto.Response[ResT], error) {
+func Delete[ResT any](ctx context.Context, client repository.HttpClientInterface, url string, headers map[string]string) (*dto2.Response[ResT], error) {
 	request, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return nil, err

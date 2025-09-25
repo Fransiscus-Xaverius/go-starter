@@ -11,6 +11,6 @@ func ResolveUserRepository(db *gorm.DB) repository2.UserInterface {
 	return repository2.NewUserMySQL(db)
 }
 
-func ResolveUserUseCase(userRepository repository2.UserInterface) usecase.UserUseCaseInterface {
+func ResolveUserUseCase(userRepository repository2.UserInterface) usecase.UserInterface {
 	return usecase.NewUserUseCase(userRepository)
 }

@@ -15,7 +15,7 @@ type userUseCase struct {
 	userRepository userRepository.UserInterface
 }
 
-func NewUserUseCase(userRepository userRepository.UserInterface) UserUseCaseInterface {
+func NewUserUseCase(userRepository userRepository.UserInterface) UserInterface {
 	return &userUseCase{userRepository: userRepository}
 }
 
