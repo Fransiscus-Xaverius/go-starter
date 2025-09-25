@@ -6,7 +6,6 @@ CREATE DATABASE IF NOT EXISTS demo
 -- Use the 'demo' database
 USE demo;
 
--- ACL
 CREATE TABLE IF NOT EXISTS user
 (
     `id`           bigint(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
