@@ -1,4 +1,4 @@
-package repository
+package v1
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"time"
 
 	dto2 "github.com/cde/go-example/core/3rdparty/http_client/dto"
+	"github.com/cde/go-example/core/3rdparty/http_client/repository"
 	appContext "github.com/cde/go-example/core/context"
 	"github.com/cde/go-example/core/vars"
 	"github.com/gofiber/fiber/v2"
@@ -15,27 +16,27 @@ import (
 )
 
 type (
-	httpClient struct {
+	HttpClient struct {
 		client *http.Client
 		debug  bool
 	}
 )
 
-func NewHttpClientRepository(client *http.Client) HttpClientInterface {
-	return &httpClient{client: client}
+func NewHttpClientRepository(client *http.Client) *HttpClient {
+	return &HttpClient{client: client}
 }
 
-func (v httpClient) EnableDebug() HttpClientInterface {
+func (v *HttpClient) EnableDebug() repository.HttpClientInterface {
 	v.debug = true
 	return v
 }
 
-func (v httpClient) DisableDebug() HttpClientInterface {
+func (v *HttpClient) DisableDebug() repository.HttpClientInterface {
 	v.debug = false
 	return v
 }
 
-func (v httpClient) Do(ctx context.Context, request *http.Request, headers map[string]string) (*dto2.ResponseByte, error) {
+func (v *HttpClient) Do(ctx context.Context, request *http.Request, headers map[string]string) (*dto2.ResponseByte, error) {
 	defer func() {
 		if request != nil && request.Body != nil {
 			_ = request.Body.Close()
@@ -80,7 +81,7 @@ func (v httpClient) Do(ctx context.Context, request *http.Request, headers map[s
 	}()
 
 	if err != nil {
-		logger.Errorf("httpClient.do got err %s", err.Error())
+		logger.Errorf("HttpClient.do got err %s", err.Error())
 		return nil, err
 	}
 	content, err := io.ReadAll(response.Body)

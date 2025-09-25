@@ -22,6 +22,14 @@ type Config struct {
 
 	CorsAllowOrigins string `envconfig:"CORS_ALLOW_ORIGINS" default:"*"` // "https://gofiber.io, https://gofiber.net"
 	AllowHeaders     string `envconfig:"CORS_ALLOW_HEADERS" default:"Origin, Content-Type, Accept, X-Requested-Id"`
+
+	AwsAccessKeyId     string `envconfig:"AWS_ACCESS_KEY_ID" default:""`
+	AwsSecretAccessKey string `envconfig:"AWS_SECRET_ACCESS_KEY" default:""`
+	AwsSessionToken    string `envconfig:"AWS_SESSION_TOKEN" default:""`
+	AwsRegion          string `envconfig:"AWS_REGION" default:"ap-southeast-1"`
+	AwsS3Bucket        string `envconfig:"AWS_S3_BUCKET" default:""`
+
+	AyoAuthTimeout int `envconfig:"AYO_AUTH_TIMEOUT" default:"5"` // in seconds
 }
 
 var cfg *Config

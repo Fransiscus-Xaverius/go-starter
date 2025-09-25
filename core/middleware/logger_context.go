@@ -19,11 +19,11 @@ func LoggerContext(appName string, appVersion string) func(c *fiber.Ctx) error {
 					value,
 				).
 				WithField(
-					"app_name",
+					vars.LoggerFieldAppName,
 					appName,
 				).
 				WithField(
-					"app_version",
+					vars.LoggerFieldAppVersion,
 					appVersion,
 				))
 

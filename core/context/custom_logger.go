@@ -4,24 +4,32 @@ import (
 	"os"
 	"time"
 
+	"github.com/cde/go-example/config"
 	log "github.com/sirupsen/logrus"
 )
 
 var (
 	customLogger = &log.Logger{
 		Out: os.Stdout,
-		Formatter: &log.JSONFormatter{
+		//Formatter: &log.JSONFormatter{
+		//	TimestampFormat: time.RFC3339Nano,
+		//	PrettyPrint:     false,
+		//},
+		Formatter: &log.TextFormatter{
+			ForceColors:     true,
+			FullTimestamp:   true,
 			TimestampFormat: time.RFC3339Nano,
-			PrettyPrint:     false,
 		},
-		//Formatter:    &log.TextFormatter{},
 		Hooks:        make(log.LevelHooks),
-		Level:        log.InfoLevel,
+		Level:        log.ErrorLevel,
 		ExitFunc:     os.Exit,
-		ReportCaller: false,
+		ReportCaller: true,
 	}
 )
 
 func NewLogger() *log.Logger {
+	if config.Get().AppDebug {
+		customLogger.SetLevel(log.InfoLevel)
+	}
 	return customLogger
 }

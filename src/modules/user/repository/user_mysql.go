@@ -21,10 +21,16 @@ func (u userMySQL) Create(ctx context.Context, user *entity.User) (*entity.User,
 	var (
 		logger = appContext.LoggerFromContext(ctx)
 		db     = u.db.WithContext(ctx)
+		err    error
 	)
 
 	logger.Info("userMySQL.Create")
-	err := db.Create(user).Error
+	defer func() {
+		if err != nil {
+			logger.Errorf("userMySQL.Create: %v", err)
+		}
+	}()
+	err = db.Create(user).Error
 	return user, err
 }
 
@@ -33,10 +39,16 @@ func (u userMySQL) GetByID(ctx context.Context, id int32) (*entity.User, error) 
 		logger = appContext.LoggerFromContext(ctx)
 		db     = u.db.WithContext(ctx)
 		user   entity.User
+		err    error
 	)
-
 	logger.Info("userMySQL.GetByID")
-	err := db.Where("id=?", id).First(&user).Error
+	defer func() {
+		if err != nil {
+			logger.Errorf("userMySQL.GetByID: %v", err)
+		}
+	}()
+
+	err = db.Where("id=?", id).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -52,9 +64,16 @@ func (u userMySQL) List(ctx context.Context, limit int, offset int) ([]entity.Us
 		logger = appContext.LoggerFromContext(ctx)
 		db     = u.db.WithContext(ctx)
 		users  []entity.User
+		err    error
 	)
 
 	logger.Info("userMySQL.List")
-	err := db.Limit(limit).Offset(offset).Find(&users).Error
+	defer func() {
+		if err != nil {
+			logger.Errorf("userMySQL.List: %v", err)
+		}
+	}()
+
+	err = db.Limit(limit).Offset(offset).Find(&users).Error
 	return users, err
 }
